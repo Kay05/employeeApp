@@ -1,0 +1,49 @@
+version: "3.9"
+   
+services:
+  db:
+    image: mysql:5.7
+    ports:
+        - '3306:3306'
+    environment:
+        MYSQL_DATABASE: 'my-app-db'
+        MYSQL_USER: 'kuda'
+        MYSQL_PASSWORD: 'password'
+        MYSQL_ROOT_PASSWORD: 'password'
+        MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-p$$MYSQL_PASSWORD"]
+        retries: 3
+        timeout: 5s
+  web:
+    build:
+        context: ./backend
+    volumes:
+        - ./backend:/app
+    ports:
+        - '8000:80'
+    env_file:
+        - ./backend/.env
+    depends_on:
+        db:
+           condition: service_healthy
+#   ui:
+#         build: ./ui_app
+#         container_name: ui
+#         ports:
+#             - 4200:80
+#         links:
+#             - web
+#   redis:
+#     image: 'redis:alpine'
+#     ports:
+#         - '${FORWARD_REDIS_PORT:-6379}:6379'
+#     volumes:
+#         - 'sailredis:/data'
+#     networks:
+#         - sail
+#     healthcheck:
+#         test: ["CMD", "redis-cli", "ping"]
+# volumes:
+#     sailredis:
+#         driver: local 
