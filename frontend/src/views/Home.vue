@@ -39,20 +39,16 @@
 
           <v-container fluid>
             <v-data-iterator
-              :items="items"
+              :items="employees"
               :items-per-page.sync="itemsPerPage"
               :page.sync="page"
               :search="search"
-              :sort-by="sortBy.toLowerCase()"
+              :sort-by="sortBy.toLowerCase().replace(' ', '_')"
               :sort-desc="sortDesc"
               hide-default-footer
             >
               <template v-slot:header>
-                <v-toolbar
-                  dark
-                  color="purple darken-3"
-                  class="mb-1"
-                >
+                <v-toolbar dark color="purple darken-3" class="mb-1">
                   <v-text-field
                     v-model="search"
                     clearable
@@ -73,24 +69,11 @@
                       label="Sort by"
                     ></v-select>
                     <v-spacer></v-spacer>
-                    <v-btn-toggle
-                      v-model="sortDesc"
-                      mandatory
-                    >
-                      <v-btn
-                        large
-                        depressed
-                        color="purple"
-                        :value="false"
-                      >
+                    <v-btn-toggle v-model="sortDesc" mandatory>
+                      <v-btn large depressed color="purple" :value="false">
                         <v-icon>mdi-arrow-up</v-icon>
                       </v-btn>
-                      <v-btn
-                        large
-                        depressed
-                        color="purple"
-                        :value="true"
-                      >
+                      <v-btn large depressed color="purple" :value="true">
                         <v-icon>mdi-arrow-down</v-icon>
                       </v-btn>
                     </v-btn-toggle>
@@ -100,90 +83,56 @@
 
               <template v-slot:default="props">
                 <v-list subheader two-line>
-                    <template v-for="(item, index ) in props.items">
-                      <v-divider inset :key="index"></v-divider>
-                      <v-list-item :key="item.name">
-                        <v-list-item-avatar>
-                          <v-icon
-                            color="purple"
-                            dark
-                            large
-                          >{{ getIcon(index) }}</v-icon>
-                        </v-list-item-avatar>
+                  <template v-for="(item, index) in props.items">
+                    <v-divider inset :key="index"></v-divider>
+                    <v-list-item :key="item.name">
+                      <v-list-item-avatar>
+                        <v-icon color="purple" dark large>{{
+                          getIcon(index)
+                        }}</v-icon>
+                      </v-list-item-avatar>
 
-                        <v-list-item-content>
-                          <v-list-item-title></v-list-item-title>
-                          <v-row class="text-center">
-                            <v-col 
-                            cols="3">
-                              <p class="font-weight-bold mt-4">
-                                {{ item.name }}
-                              </p>
-                            </v-col>
-                            <v-col 
-                            cols="3"  
+                      <v-list-item-content>
+                        <v-list-item-title></v-list-item-title>
+                        <v-row class="text-center">
+                          <v-col cols="3">
+                            <p class="font-weight-bold mt-4">
+                              {{ item.employeeID }}
+                            </p>
+                          </v-col>
+                          <v-col
+                            cols="3"
                             v-for="(key, index) in filteredKeys"
-                            :key="index">
-                              <p class="font-weight-bold mt-4" :class="{ 'blue--text': sortBy === key }">
-                                {{ key }}: {{ item[key.toLowerCase()] }}
-                              </p>
-                            </v-col>
-                          </v-row>
-                        </v-list-item-content>
-
-                        <v-list-item-action>
-                          <v-btn icon>
-                            <v-icon color="grey lighten-1">mdi-information</v-icon>
-                          </v-btn>
-                        </v-list-item-action>
-                      </v-list-item>
-                      <v-divider inset :key="'y'+index"></v-divider>
-                    </template>
-                  </v-list>
-                <!-- <v-row>
-                  <v-col
-                    v-for="item in props.items"
-                    :key="item.name"
-                    cols="12"
-                    sm="6"
-                    md="4"
-                    lg="3"
-                  >
-                  
-                    <v-card>
-                      <v-card-title class="subheading font-weight-bold">
-                        {{ item.name }}
-                      </v-card-title>
-
-                      <v-divider></v-divider>
-
-                      <v-list dense>
-                        <v-list-item
-                          v-for="(key, index) in filteredKeys"
-                          :key="index"
-                        >
-                          <v-list-item-content :class="{ 'blue--text': sortBy === key }">
-                            {{ key }}:
-                          </v-list-item-content>
-                          <v-list-item-content
-                            class="align-end"
-                            :class="{ 'blue--text': sortBy === key }"
+                            :key="index"
                           >
-                            {{ item[key.toLowerCase()] }}
-                          </v-list-item-content>
-                        </v-list-item>
-                      </v-list>
-                    </v-card>
-                  </v-col>
-                </v-row> -->
+                            <p
+                              class="font-weight-bold mt-4"
+                              :class="{ 'blue--text': sortBy === key }"
+                            >
+                              {{ item[key.toLowerCase().replace(" ", "_")] }}
+                            </p>
+                          </v-col>
+                        </v-row>
+                      </v-list-item-content>
+
+                      <v-list-item-action>
+                        <v-btn :to="'/employee/' + item.id" icon>
+                          <v-icon color="grey lighten-1">mdi-pencil</v-icon>
+                        </v-btn>
+                      </v-list-item-action>
+                      <v-list-item-action>
+                        <v-btn @click="deleteEmployee(item)" icon>
+                          <v-icon color="grey lighten-1">mdi-delete</v-icon>
+                        </v-btn>
+                      </v-list-item-action>
+                    </v-list-item>
+                    <v-divider inset :key="'y' + index"></v-divider>
+                  </template>
+                </v-list>
               </template>
 
               <template v-slot:footer>
-                <v-row
-                  class="mt-2"
-                  align="center"
-                  justify="center"
-                >
+                <v-row class="mt-2" align="center" justify="center">
                   <span class="grey--text">Items per page</span>
                   <v-menu offset-y>
                     <template v-slot:activator="{ on, attrs }">
@@ -240,48 +189,6 @@
               </template>
             </v-data-iterator>
           </v-container>
-
-          <!-- <v-list subheader two-line>
-            <template v-for="(employee, index ) in employees">
-              <v-divider inset :key="index"></v-divider>
-              <v-list-item :key="employee.id">
-                <v-list-item-avatar>
-                  <v-icon
-                    color="purple"
-                    dark
-                    large
-                  >{{ getIcon(index) }}</v-icon>
-                </v-list-item-avatar>
-
-                <v-list-item-content>
-                  <v-row class="text-center">
-                    <v-col cols="3">
-                      <p class="font-weight-bold mt-4">
-                        First Name
-                      </p>
-                    </v-col>
-                    <v-col cols="3">
-                      <p class="font-weight-bold mt-4">
-                        Last Name
-                      </p>
-                    </v-col>
-                    <v-col cols="3">
-                      <p class="font-weight-bold mt-4">
-                        Contact Number
-                      </p>
-                    </v-col>
-                  </v-row>
-                </v-list-item-content>
-
-                <v-list-item-action>
-                  <v-btn icon>
-                    <v-icon color="grey lighten-1">mdi-information</v-icon>
-                  </v-btn>
-                </v-list-item-action>
-              </v-list-item>
-              <v-divider inset :key="'y'+index"></v-divider>
-            </template>
-          </v-list> -->
         </v-col>
       </v-row>
     </v-container>
@@ -299,196 +206,81 @@ export default {
   data() {
     return {
       selected: [2],
-      employees: [
-        {
-          id: '1x',
-        },
-        {
-          id: '2x',
-        },
-        {
-          id: '3x',
-        },
-        {
-          id: '4x',
-        },
-        {
-          id: '5x',
-        },
-        {
-          id: '6x',
-        },
-        {
-          id: '7x',
-        },
-        {
-          id: '8x',
-        },
-        {
-          id: '9x',
-        },
-        {
-          id: '10x',
-        },
-        {
-          id: '11x',
-        },
-      ],
-
-      itemsPerPageArray: [4, 8, 12],
-        search: '',
-        filter: {},
-        sortDesc: false,
-        page: 1,
-        itemsPerPage: 4,
-        sortBy: 'name',
-        keys: [
-          'Name',
-          'Calories',
-          'Fat',
-          // 'Carbs',
-          // 'Protein',
-          // 'Sodium',
-          // 'Calcium',
-        ],
-        items: [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-            sodium: 87,
-            calcium: '14%',
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-            sodium: 129,
-            calcium: '8%',
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-            sodium: 337,
-            calcium: '6%',
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-            sodium: 413,
-            calcium: '3%',
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-            sodium: 327,
-            calcium: '7%',
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-            sodium: 50,
-            calcium: '0%',
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-            sodium: 38,
-            calcium: '0%',
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-            sodium: 562,
-            calcium: '0%',
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-            sodium: 326,
-            calcium: '2%',
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-            sodium: 54,
-            calcium: '12%',
-          },
-        ],
-      }
+      pagination: {},
+      search: "",
+      employees: [],
+      itemsPerPageArray: [10, 20, 30],
+      search: "",
+      filter: {},
+      sortDesc: false,
+      page: 1,
+      itemsPerPage: 5,
+      sortBy: "employeeId",
+      keys: ["EmployeeID", "First Name", "Last Name", "Contact Number"],
+    };
   },
   components: {
     LoadingOverlay,
   },
-  computed: {
-      numberOfPages () {
-        return Math.ceil(this.items.length / this.itemsPerPage)
+  watch: {
+    params: {
+      handler() {
+        this.getEmployees();
       },
-      filteredKeys () {
-        return this.keys.filter(key => key !== 'Name')
-      },
+      deep: true,
     },
+  },
+  computed: {
+    numberOfPages() {
+      return Math.ceil(this.employees.length / this.itemsPerPage);
+    },
+    filteredKeys() {
+      return this.keys.filter((key) => key !== "EmployeeID");
+    },
+  },
   mounted() {
     this.getEmployees();
 
     document.title = "List | EmployeeApp";
   },
   methods: {
+    async deleteEmployee(item) {
+      axios.delete(`/api/v1/employees/${item.id}`)
+      .then(response => {
+        console.log(response)
+        this.employees = this.employees.filter(employee => employee.id !== item.id)
+      }).catch(error => {
+        console.log(error)
+      })
+      
+    },
     getIcon(index) {
       let val = parseInt(index) + 1;
       return `mdi-numeric-${val}-circle-outline`;
     },
-    nextPage () {
-      if (this.page + 1 <= this.numberOfPages) this.page += 1
+    nextPage() {
+      if (this.page + 1 <= this.numberOfPages) this.page += 1;
     },
-    formerPage () {
-      if (this.page - 1 >= 1) this.page -= 1
+    formerPage() {
+      if (this.page - 1 >= 1) this.page -= 1;
     },
-    updateItemsPerPage (number) {
-      this.itemsPerPage = number
+    updateItemsPerPage(number) {
+      this.itemsPerPage = number;
     },
-    async getEmployees() {
+    getEmployees() {
       this.$store.commit("setIsLoading", true);
-      await setTimeout(console.log("test"), 3000);
 
-      // await axios
-      //   .get("/api/v1/latest-products")
-      //   .then((response) => {
-      //     this.employees = response.data;
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
-
-      this.$store.commit("setIsLoading", false);
+      axios
+        .get("/api/v1/employees")
+        .then((response) => {
+          console.log(response.data);
+          this.employees = response.data.data;
+          this.$store.commit("setIsLoading", false);
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$store.commit("setIsLoading", false);
+        });
     },
   },
 };
