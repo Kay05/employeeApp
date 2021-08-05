@@ -34,11 +34,11 @@ docker-compose up
 
 ## Things to look out for
 
-Inital build will take some time as docker will use several images to build the environment
+Initial build will take some time as docker will use several images to build the environment
 
 - [Api documentation](https://127.0.0.1:8000/api/documentation).
 
-To add more employess quickly, you can run seed the database. Run the following commands:   
+To add more employess quickly, you can seed the database. Run the following commands:   
 
 ```
 docker-compose exec web sh
@@ -47,7 +47,7 @@ docker-compose exec web sh
 ```
 php artisan db:seed --class=EmployeeSeeder
 ```
-If you are having issues with docker the backend can run seperately if you have php 7.4 installed on your local machine
+If you are having issues with docker the backend and frontend can run seperately, if you have php 7.4 installed on your local machine
 
 ```
 install composer
