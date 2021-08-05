@@ -17,15 +17,16 @@ class SkillSeeder extends Seeder
     public function run()
     {
         $skills = [
-            "excel",
-            "word", 
-            "powerpoint", 
-            "management", "dancing", 
-            "singing", "plumbing", "public speaking"
+            "Excel",
+            "Word", 
+            "Powerpoint", 
+            "Management", "Dancing", 
+            "Singing", "Plumbing", "Public Speaking"
         ];
         foreach ($skills as $skill) {
             Skill::create([
-                'name' => $skill
+                'name' => $skill,
+                'slug' => strtolower($skill)
             ]);
         }
     }

@@ -28,9 +28,10 @@ class Employee extends Model
 
     protected $_numbers = '0123456789';
     protected $_letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    
 
-    public function skills(){
+
+    public function skills()
+    {
         return $this->belongsToMany('App\Models\Skill')->withPivot('experience', 'rating')->withTimestamps();;
     }
 

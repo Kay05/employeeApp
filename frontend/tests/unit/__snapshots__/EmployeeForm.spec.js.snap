@@ -1,0 +1,84 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmployeeForm.vue renders props.msg when passed 1`] = `
+<div class="text-center">
+  <v-container-stub tag="div">
+    <v-row-stub tag="div" class="text-center">
+      <v-col-stub cols="12" tag="div">
+        <v-subheader-stub class="text-h4 purple--text pl-0"><strong>Basic Info</strong></v-subheader-stub>
+        <form>
+          <v-row-stub tag="div">
+            <v-col-stub cols="12" md="6" tag="div">
+              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="First Name" loaderheight="2" clearicon="$clear" counter="20" type="text" required=""></v-text-field-stub>
+            </v-col-stub>
+            <v-col-stub cols="12" md="6" tag="div">
+              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Last Name" loaderheight="2" clearicon="$clear" counter="20" type="text" required=""></v-text-field-stub>
+            </v-col-stub>
+          </v-row-stub>
+          <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Contact Number" loaderheight="2" clearicon="$clear" counter="10" type="text" required=""></v-text-field-stub>
+          <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="E-mail Address" loaderheight="2" clearicon="$clear" type="text" required=""></v-text-field-stub>
+          <v-menu-stub opendelay="0" closedelay="0" contentclass="" maxwidth="auto" minwidth="auto" nudgebottom="0" nudgeleft="0" nudgeright="0" nudgetop="0" nudgewidth="0" openonclick="true" closeonclick="true" maxheight="auto" offsety="true" origin="top left" transition="scale-transition" data-testid="increment-menu">
+            <v-date-picker-stub width="290" eventcolor="warning" firstdayofweek="0" localefirstdayofyear="0" max="2021-08-05" min="1950-01-01" nexticon="$next" nextmontharialabel="$vuetify.datePicker.nextMonthAriaLabel" nextyeararialabel="$vuetify.datePicker.nextYearAriaLabel" previcon="$prev" prevmontharialabel="$vuetify.datePicker.prevMonthAriaLabel" prevyeararialabel="$vuetify.datePicker.prevYearAriaLabel" showcurrent="true" selecteditemstext="$vuetify.datePicker.itemsSelected" type="date"></v-date-picker-stub>
+          </v-menu-stub>
+          <v-subheader-stub class="text-h4 purple--text pl-0"><strong>Address Info</strong></v-subheader-stub>
+          <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Street Address" loaderheight="2" clearicon="$clear" type="text" required=""></v-text-field-stub>
+          <v-row-stub tag="div">
+            <v-col-stub cols="12" md="4" tag="div">
+              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="City" loaderheight="2" clearicon="$clear" type="text" required=""></v-text-field-stub>
+            </v-col-stub>
+            <v-col-stub cols="12" md="4" tag="div">
+              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Postal Code" loaderheight="2" clearicon="$clear" counter="4" type="number" required=""></v-text-field-stub>
+            </v-col-stub>
+            <v-col-stub cols="12" md="4" tag="div">
+              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Country" loaderheight="2" clearicon="$clear" type="text" required=""></v-text-field-stub>
+            </v-col-stub>
+          </v-row-stub>
+          <v-subheader-stub class="text-h4 purple--text pl-0"><strong>Skills</strong></v-subheader-stub>
+          <v-row-stub tag="div" class="mt-5">
+            <v-col-stub cols="12" tag="div">
+              <v-divider-stub></v-divider-stub>
+            </v-col-stub>
+            <v-col-stub cols="12" md="4" tag="div">
+              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Skill" loaderheight="2" clearicon="$clear" type="text" required=""></v-text-field-stub>
+            </v-col-stub>
+            <v-col-stub cols="12" md="3" tag="div">
+              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Years Experience" loaderheight="2" clearicon="$clear" type="text" required=""></v-text-field-stub>
+            </v-col-stub>
+            <v-col-stub cols="12" md="4" tag="div">
+              <v-select-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" appendicon="$dropdown" backgroundcolor="" label="Senority Rating" loaderheight="2" clearicon="$clear" type="text" valuecomparator="[Function]" nodatatext="$vuetify.noDataText" items="Beginner,Intermediate,Expert" itemcolor="primary" itemdisabled="disabled" itemtext="text" itemvalue="value" menuprops="[object Object]" required=""></v-select-stub>
+            </v-col-stub>
+            <v-col-stub cols="12" md="1" tag="div">
+              <v-btn-stub color="indigo" outlined="true" tag="button" activeclass="" large="true" fab="true" type="button" class="ma-2">
+                <v-icon-stub>mdi-delete</v-icon-stub>
+              </v-btn-stub>
+            </v-col-stub>
+            <v-col-stub cols="12" tag="div">
+              <v-divider-stub></v-divider-stub>
+            </v-col-stub>
+          </v-row-stub>
+          <v-row-stub tag="div">
+            <v-col-stub cols="12" tag="div">
+              <v-btn-stub dark="true" tag="button" activeclass="" large="true" block="true" type="button" data-testid="increment-newskill">
+                <v-icon-stub>mdi-plus</v-icon-stub>
+                Add New Skill
+              </v-btn-stub>
+              <!---->
+              <!---->
+            </v-col-stub>
+          </v-row-stub>
+          <v-row-stub tag="div" style="margin-top: 75px;">
+            <v-col-stub cols="12" md="12" tag="div" class="text-right">
+              <v-btn-stub color="purple" rounded="true" dark="true" tag="button" activeclass="" type="button" data-testid="increment-btn-major" style="padding: 23px;">
+                <v-icon-stub large="" left="">
+                  mdi-plus-circle-outline
+                </v-icon-stub> <span class="ml-5">Save and Add Employee</span>
+              </v-btn-stub>
+            </v-col-stub>
+            <!---->
+          </v-row-stub>
+        </form>
+      </v-col-stub>
+    </v-row-stub>
+  </v-container-stub>
+</div>
+`;

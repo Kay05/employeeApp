@@ -38,6 +38,10 @@ class EmployeeApiController extends Controller
      */
     public function index()
     {
+        /**
+         * Todo
+         * use collection resourse with pagination
+         */
         // return  new EmployeeCollection(Employee::paginate());
         return  new EmployeeCollection(Employee::all());
     }
@@ -185,6 +189,7 @@ class EmployeeApiController extends Controller
     {
         $employee->update($request->all());
 
+        // update employee skills
         $this->updateSkills($request, $employee);
 
         return (new EmployeeResource($employee))
@@ -228,7 +233,7 @@ class EmployeeApiController extends Controller
      * )
      */
     /**
-     * Display the specified resource.
+     * Delete the specified resource.
      *
      * @param  \App\Models\Employee  $employee
      * @return \Illuminate\Http\Response
@@ -240,7 +245,7 @@ class EmployeeApiController extends Controller
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
-     /**
+    /**
      * @OA\Delete(
      *      path="/employees/{id}/skill/{skill_id}",
      *      operationId="deleteEmployeeSkill",
@@ -285,7 +290,7 @@ class EmployeeApiController extends Controller
      * )
      */
     /**
-     * Display the specified resource.
+     * Delete the specified resource.
      *
      * @param  String  $id
      * @param  String $skill_id
@@ -293,8 +298,10 @@ class EmployeeApiController extends Controller
      */
     public function deleteEmployeeSkill(String $id, String $skill_id)
     {
+        // find employee
         $employee = Employee::find($id);
 
+        // removing skill
         $employee->skills()->detach($skill_id);
 
         return (new EmployeeResource($employee))
@@ -302,11 +309,20 @@ class EmployeeApiController extends Controller
             ->setStatusCode(Response::HTTP_ACCEPTED);
     }
 
+    /**
+     * Add employee skills function
+     *
+     * @param Request $request
+     * @param Employee $employee
+     * @return void
+     */
     private function addSkills(Request $request, Employee $employee)
     {
         foreach ($request['skills'] as $skillArray) {
+            // check if skill name already exists using unique slug
             $skill = \App\Models\Skill::where('slug', strtolower($skillArray['name']))->first();
             if (!$skill) {
+                // create skill
                 $skill = new \App\Models\Skill();
                 $skill->slug = strtolower($skillArray['name']);
                 $skill->name = $skillArray['name'];
@@ -317,27 +333,37 @@ class EmployeeApiController extends Controller
         }
     }
 
+    /**
+     * Update employee skills function
+     *
+     * @param Request $request
+     * @param Employee $employee
+     * @return void
+     */
     private function updateSkills(Request $request, Employee $employee)
     {
         foreach ($request['skills'] as $skillArray) {
+            // check if skill name already exists using unique slug
             $skill = \App\Models\Skill::where('slug', strtolower($skillArray['name']))->first();
             if (!$skill) {
+                // create skill
                 $skill = new \App\Models\Skill();
                 $skill->slug = strtolower($skillArray['name']);
                 $skill->name = $skillArray['name'];
                 $skill->save();
             }
-            
 
+            // check of employee already has this skill
             $employeeSkill = \App\Models\EmployeeSkill::where('employee_id', $employee->id)->where('skill_id', $skill->id)->first();
             if ($employeeSkill) {
+                // update all the other attributes
                 $employeeSkill->experience = $skillArray['experience'];
                 $employeeSkill->rating = $skillArray['rating'];
                 $employeeSkill->save();
             } else {
+                // employee does not have skill
                 $employee->skills()->attach($skill->id, ['experience' => $skillArray['experience'], 'rating' => $skillArray['rating']]);
             }
-            
         }
     }
 }

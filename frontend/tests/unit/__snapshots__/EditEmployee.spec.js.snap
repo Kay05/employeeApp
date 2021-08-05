@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditEmployee.vue renders create employee page 1`] = `
+<div>
+  <employee-form-stub edit="true" employee="[object Object]" actionlink=""></employee-form-stub>
+  <loadingoverlay-stub></loadingoverlay-stub>
+</div>
+`;

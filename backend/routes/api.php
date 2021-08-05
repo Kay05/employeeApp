@@ -17,22 +17,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-
-
 
 Route::group([
     'prefix' => 'v1',
     'as' => 'api.',
     'middleware' => ['auth:api']
 ], function () {
-    //lists all users
+    //lists all users 
     Route::get('/users', [ApiController::class, 'allUsers'])->name('all-user');
 
-    // Employees
+    // Employees protected routes
     // Route::apiResource('employees', EmployeeApiController::class);
 });
 
