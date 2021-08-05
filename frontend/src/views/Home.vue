@@ -33,48 +33,85 @@
         <v-col cols="12">
           <v-col class="mb-4">
             <h2 class="font-weight-bold mb-3">
-              There are {{ employees.length }} employees
+              There are {{ filteredEmployees.length }} employees
             </h2>
           </v-col>
 
           <v-container fluid>
             <v-data-iterator
-              :items="employees"
+              :items="filteredEmployees"
               :items-per-page.sync="itemsPerPage"
               :page.sync="page"
               :search="search"
-              :sort-by="sortBy.toLowerCase().replace(' ', '_')"
+              :sort-by="sortBy.text"
               :sort-desc="sortDesc"
               hide-default-footer
             >
               <template v-slot:header>
                 <v-toolbar dark color="purple darken-3" class="mb-1">
-                  <v-text-field
-                    v-model="search"
-                    clearable
+                  <v-select
+                    xs12
                     flat
                     solo-inverted
                     hide-details
-                    prepend-inner-icon="mdi-magnify"
-                    label="Search"
-                  ></v-text-field>
+                    :items="filterFields"
+                    v-model="filterField"
+                    label="Filter by"
+                  >
+                    ></v-select
+                  >
+
                   <template v-if="$vuetify.breakpoint.mdAndUp">
                     <v-spacer></v-spacer>
                     <v-select
-                      v-model="sortBy"
+                      xs12
                       flat
                       solo-inverted
                       hide-details
-                      :items="keys"
-                      label="Sort by"
-                    ></v-select>
+                      :items="filterOperators"
+                      v-model="filterOperator"
+                      label="Operator"
+                    >
+                      ></v-select
+                    >
                     <v-spacer></v-spacer>
-                    <v-btn-toggle v-model="sortDesc" mandatory>
-                      <v-btn large depressed color="purple" :value="false">
-                        <v-icon>mdi-arrow-up</v-icon>
-                      </v-btn>
-                      <v-btn large depressed color="purple" :value="true">
-                        <v-icon>mdi-arrow-down</v-icon>
+                    <v-text-field
+                      xs12
+                      clearable
+                      flat
+                      solo-inverted
+                      hide-details
+                      name="filterTerm"
+                      :label="filterTermLabel"
+                      :mask="filterTermMask"
+                      :rules="filterTermRules"
+                      return-masked-value
+                      v-model="filterTerm"
+                    ></v-text-field>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                      v-show="filterOperator === 'between'"
+                      clearable
+                      xs12
+                      flat
+                      solo-inverted
+                      hide-details
+                      name="filterTerm2"
+                      :label="filterTermLabel"
+                      :mask="filterTermMask"
+                      :rules="filterTermRules"
+                      return-masked-value
+                      v-model="filterTerm2"
+                    ></v-text-field>
+                    <v-spacer></v-spacer>
+                    <v-btn-toggle mandatory>
+                      <v-btn
+                        large
+                        depressed
+                        color="purple"
+                        @click="onClearAllFilters"
+                      >
+                        Clear All
                       </v-btn>
                     </v-btn-toggle>
                   </template>
@@ -102,7 +139,7 @@
                           </v-col>
                           <v-col
                             cols="3"
-                            v-for="(key, index) in filteredKeys"
+                            v-for="(key, index) in keys"
                             :key="index"
                           >
                             <p
@@ -199,6 +236,7 @@
 <script>
 import LoadingOverlay from "../components/LoadingOverlay";
 import axios from "axios";
+import moment from "moment";
 
 export default {
   name: "Home",
@@ -215,8 +253,89 @@ export default {
       sortDesc: false,
       page: 1,
       itemsPerPage: 5,
-      sortBy: "employeeId",
-      keys: ["EmployeeID", "First Name", "Last Name", "Contact Number"],
+      sortBy: { text: "EmployeeID", value: "employeeId", type: "text" },
+      keys: ["First Name", "Last Name", "Contact Number"],
+      filterFields: [
+        { text: "EmployeeID", value: "employeeId", type: "text" },
+        { text: "First Name", value: "first_name", type: "text" },
+        { text: "Last Name", value: "last_name", type: "text" },
+        { text: "Date of Birth", value: "dob", type: "date" },
+        { text: "Email", value: "email", type: "text" },
+        { text: "Skill Name", value: "skills", type: "text" },
+      ],
+      filterDefs: {
+        text: {
+          contains: {
+            display: "Contains",
+            function: this.filterByTextContains,
+          },
+          startsWith: {
+            display: "Starts with",
+            function: this.filterByTextStartsWith,
+          },
+        },
+        number: {
+          equal: {
+            display: "Equal",
+            function: this.filterByNumberEqual,
+            decimalPoint: 1,
+          },
+          greater: {
+            display: "Greater than",
+            function: this.filterByNumberGreater,
+            decimalPoint: 1,
+          },
+          less: {
+            display: "Less than",
+            function: this.filterByNumberLess,
+            decimalPoint: 1,
+          },
+          between: {
+            display: "Between",
+            function: this.filterByNumberBetween,
+            decimalPoint: 1,
+          },
+        },
+        date: {
+          equal: {
+            display: "Equal",
+            function: this.filterByDateEqual,
+            format: "YYYY",
+          },
+          greater: {
+            display: "Greater than",
+            function: this.filterByDateGreater,
+            format: "YYYY",
+          },
+          less: {
+            display: "Less than",
+            function: this.filterByDateLess,
+            format: "YYYY",
+          },
+          between: {
+            display: "Between",
+            function: this.filterByDateBetween,
+            format: "YYYY",
+          },
+        },
+        lookup: {
+          is: { display: "Is", function: this.filterByLookupIs },
+          isNot: { display: "Is not", function: this.filterByLookupIsNot },
+        },
+      },
+      filterField: "",
+      filterType: "",
+      filterOperators: [],
+      filterOperator: "",
+      filterTerm: "",
+      filterTerm2: "",
+      filterTermMask: "",
+      filterTermLabel: "",
+      filterTermRules: [],
+      dateFilterFormat: "YYYY",
+      filterLookupItems: [],
+      filterLookupValue: "",
+      filterLookupLabel: "",
     };
   },
   components: {
@@ -229,13 +348,148 @@ export default {
       },
       deep: true,
     },
+    /**
+     * Set Filter Operators
+     */
+    filterField(newValue) {
+      const filterType = this.filterFields.find(
+        (item) => item.value === newValue
+      ).type;
+      if (filterType) {
+        this.filterType = filterType;
+        this.filterOperators = this.getFilterOperators(
+          this.filterDefs[filterType]
+        );
+        this.filterOperator = this.filterOperators[0]["value"];
+        this.clearFilterTerms();
+      } else {
+        this.filterType = "";
+        this.filterOperators = [];
+        this.filterOperator = "";
+        this.clearFilterTerms();
+      }
+    },
+    filterOperator() {
+      this.clearFilterTerms();
+      if (this.filterType === "text") {
+        this.filterTermMask = "";
+        this.filterTermLabel = "Filter";
+      } else if (this.filterType === "number") {
+        if (this.filterField === "gpa") {
+          this.filterTermMask = "#.#";
+          this.filterTermLabel = "#.#";
+        } else if (this.filterField === "zip") {
+          this.filterTermMask = "#####";
+          this.filterTermLabel = "#####";
+        } else {
+          this.filterTermMask = "######";
+          this.filterTermLabel = "######";
+        }
+      } else if (this.filterType === "date") {
+        this.filterTermMask = "####";
+        this.filterTermLabel = "YYYY";
+        this.filterTermRules = [this.rulesIsValidDate];
+      } else if (this.filterType === "lookup") {
+        let lookupItems = [];
+        // if (this.filterField === 'state') {
+        //     lookupItems = this.states
+        //     this.filterLookupLabel = 'State'
+        // }
+        this.filterLookupItems = lookupItems;
+        this.filterLookupValue = "";
+      }
+    },
   },
   computed: {
+    /**
+     * set page numbers
+     */
     numberOfPages() {
       return Math.ceil(this.employees.length / this.itemsPerPage);
     },
     filteredKeys() {
-      return this.keys.filter((key) => key !== "EmployeeID");
+      return this.filterFields.filter((key) => key.text !== "EmployeeID");
+      // return this.keys.filter((key) => key !== "EmployeeID");
+    },
+    filteredEmployees() {
+      if (
+        this.filterField &&
+        this.filterOperator &&
+        (this.filterTerm || this.filterLookupValue)
+      ) {
+        const filterFunction = this.filterDefs[this.filterType][
+          this.filterOperator
+        ]["function"];
+        if (this.filterType === "number") {
+          const decimalPoint =
+            this.filterDefs[this.filterType][this.filterOperator][
+              "decimalPoint"
+            ] || 0;
+          if (this.filterOperator === "between") {
+            if (this.filterTerm && this.filterTerm2) {
+              return filterFunction(
+                this.employees,
+                this.filterField,
+                this.filterTerm,
+                this.filterTerm2,
+                decimalPoint
+              );
+            } else {
+              return this.employees;
+            }
+          } else {
+            return filterFunction(
+              this.employees,
+              this.filterField,
+              this.filterTerm,
+              decimalPoint
+            );
+          }
+        } else if (this.filterType === "date") {
+          const format =
+            this.filterDefs[this.filterType][this.filterOperator]["format"] ||
+            this.dateFilterFormat;
+          if (
+            this.filterOperator === "between" &&
+            this.rulesIsValidDate(this.filterTerm) &&
+            this.rulesIsValidDate(this.filterTerm2)
+          ) {
+            return filterFunction(
+              this.employees,
+              this.filterField,
+              this.filterTerm,
+              this.filterTerm2,
+              format
+            );
+          } else if (
+            this.filterOperator !== "between" &&
+            this.rulesIsValidDate(this.filterTerm)
+          ) {
+            return filterFunction(
+              this.employees,
+              this.filterField,
+              this.filterTerm,
+              format
+            );
+          } else {
+            return this.employees;
+          }
+        } else if (this.filterType === "lookup") {
+          return filterFunction(
+            this.employees,
+            this.filterField,
+            this.filterLookupValue
+          );
+        } else {
+          return filterFunction(
+            this.employees,
+            this.filterField,
+            this.filterTerm
+          );
+        }
+      } else {
+        return this.employees;
+      }
     },
   },
   mounted() {
@@ -243,16 +497,23 @@ export default {
 
     document.title = "List | EmployeeApp";
   },
+  created() {
+    this.filterField = "first_name";
+    // this.get()
+  },
   methods: {
     async deleteEmployee(item) {
-      axios.delete(`/api/v1/employees/${item.id}`)
-      .then(response => {
-        console.log(response)
-        this.employees = this.employees.filter(employee => employee.id !== item.id)
-      }).catch(error => {
-        console.log(error)
-      })
-      
+      axios
+        .delete(`/api/v1/employees/${item.id}`)
+        .then((response) => {
+          console.log(response);
+          this.employees = this.employees.filter(
+            (employee) => employee.id !== item.id
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     getIcon(index) {
       let val = parseInt(index) + 1;
@@ -282,6 +543,199 @@ export default {
           this.$store.commit("setIsLoading", false);
         });
     },
+    ////////////////////////////////////////////////
+    getFilterOperators(filterDef) {
+      let oprs = [];
+      if (filterDef) {
+        for (let key in filterDef) {
+          oprs.push({ text: filterDef[key]["display"], value: key });
+        }
+      }
+      return oprs;
+    },
+    clearFilterTerms() {
+      this.filterTerm = "";
+      this.filterTerm2 = "";
+      this.filterTermMask = "";
+      this.filterTermLabel = "Filter";
+      this.filterTermRules = [];
+      this.filterLookupValue = "";
+      this.filterLookupItems = [];
+      this.filterLookupLabel = "";
+    },
+    rulesIsValidDate(value) {
+      return moment(value, this.dateFilterFormat, true).isValid();
+    },
+    // ---------- Events ------------------------
+    onClearAllFilters() {
+      this.filterField = "first_name";
+    },
+    // ---------- field filter methods ----------
+    filterByTextContains(list, fieldName, fieldValue) {
+      const re = new RegExp(fieldValue, "i");
+      let result = this.filterByRegExp(list, fieldName, fieldValue, re);
+      return result;
+    },
+    filterByTextStartsWith(list, fieldName, fieldValue) {
+      const re = new RegExp("^" + fieldValue, "i");
+      return this.filterByRegExp(list, fieldName, fieldValue, re);
+    },
+    filterByRegExp(list, fieldName, fieldValue, regExp) {
+      return list.filter((item) => {
+        if (item[fieldName] !== undefined) {
+          if (fieldName === "skills" && item.skills.length > 0) {
+            let values = item.skills.filter((skill) => regExp.test(skill.name));
+            return values.length > 0;
+          }
+          return regExp.test(item[fieldName]);
+        } else {
+          return true;
+        }
+      });
+    },
+    filterByNumberEqual(list, fieldName, fieldValue, decimalPoint) {
+      decimalPoint = decimalPoint || 0;
+      return list.filter((item) => {
+        if (item[fieldName] !== undefined) {
+          return (
+            Number(item[fieldName]).toFixed(decimalPoint) ===
+            Number(fieldValue).toFixed(decimalPoint)
+          );
+        } else {
+          return true;
+        }
+      });
+    },
+    filterByNumberGreater(
+      list,
+      fieldName,
+      fieldValue,
+      floatPoint,
+      decimalPoint
+    ) {
+      decimalPoint = decimalPoint || 0;
+      return list.filter((item) => {
+        if (item[fieldName] !== undefined) {
+          return (
+            Number(item[fieldName]).toFixed(decimalPoint) >
+            Number(fieldValue).toFixed(decimalPoint)
+          );
+        } else {
+          return true;
+        }
+      });
+    },
+    filterByNumberLess(list, fieldName, fieldValue, decimalPoint) {
+      decimalPoint = decimalPoint || 0;
+      return list.filter((item) => {
+        if (item[fieldName] !== undefined) {
+          return (
+            Number(item[fieldName]).toFixed(decimalPoint) <
+            Number(fieldValue).toFixed(decimalPoint)
+          );
+        } else {
+          return true;
+        }
+      });
+    },
+    filterByNumberBetween(
+      list,
+      fieldName,
+      fieldValue1,
+      fieldValue2,
+      decimalPoint
+    ) {
+      decimalPoint = decimalPoint || 0;
+      return list.filter((item) => {
+        if (item[fieldName] !== undefined) {
+          return (
+            Number(item[fieldName]).toFixed(decimalPoint) >=
+              Number(fieldValue1).toFixed(decimalPoint) &&
+            Number(item[fieldName]).toFixed(decimalPoint) <=
+              Number(fieldValue2).toFixed(decimalPoint)
+          );
+        } else {
+          return true;
+        }
+      });
+    },
+    filterByDateEqual(list, fieldName, fieldValue, format) {
+      format = format || this.dateFilterFormat;
+      return list.filter((item) => {
+        if (item[fieldName] !== undefined) {
+          return moment(item[fieldName]).isSame(
+            moment(fieldValue, format),
+            "year"
+          );
+        } else {
+          return true;
+        }
+      });
+    },
+    filterByDateGreater(list, fieldName, fieldValue, format) {
+      format = format || this.dateFilterFormat;
+      return list.filter((item) => {
+        if (item[fieldName] !== undefined) {
+          return moment(item[fieldName]).isAfter(
+            moment(fieldValue, format),
+            "year"
+          );
+        } else {
+          return true;
+        }
+      });
+    },
+    filterByDateLess(list, fieldName, fieldValue, format) {
+      format = format || this.dateFilterFormat;
+      return list.filter((item) => {
+        if (item[fieldName] !== undefined) {
+          return moment(item[fieldName]).isBefore(
+            moment(fieldValue, format),
+            "year"
+          );
+        } else {
+          return true;
+        }
+      });
+    },
+    filterByDateBetween(list, fieldName, fieldValue1, fieldValue2, format) {
+      format = format || this.dateFilterFormat;
+      return list.filter((item) => {
+        if (item[fieldName] !== undefined) {
+          return moment(item[fieldName]).isBetween(
+            moment(fieldValue1, format),
+            moment(fieldValue2, format),
+            "year",
+            "[]"
+          );
+        } else {
+          return true;
+        }
+      });
+    },
+    filterByLookupIs(list, fieldName, fieldValue) {
+      return list.filter((item) => {
+        if (item[fieldName] !== undefined) {
+          return item[fieldName] === fieldValue;
+        } else {
+          return true;
+        }
+      });
+    },
+    filterByLookupIsNot(list, fieldName, fieldValue) {
+      return list.filter((item) => {
+        if (item[fieldName] !== undefined) {
+          return item[fieldName] !== fieldValue;
+        } else {
+          return true;
+        }
+      });
+    },
   },
 };
 </script>
+<style scoped>
+.v-text-field {
+  width: 150px;
+}
+</style>
