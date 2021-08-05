@@ -6,7 +6,6 @@
 # Apply database migrations
 echo "Apply database migrations and seeds"
 php artisan migrate
-php artisan db:seed
 
 echo "clear cache"
 php artisan cache:clear
