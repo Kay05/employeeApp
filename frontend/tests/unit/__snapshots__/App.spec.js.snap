@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App.vue renders create employee page 1`] = `
+<v-app-stub id="app">
+  <v-card-stub loaderheight="4" tag="div" color="grey lighten-4" tile="true" flat="true" app="">
+    <v-app-bar-stub dark="true" tag="header" extensionheight="48" src="" value="true" fixed="true" app="true">
+      <v-app-bar-nav-icon-stub>
+        <div class="d-flex align-center">
+          <v-img-stub width="40" alt="Vuetify Logo" contain="true" options="[object Object]" position="center center" src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png" transition="scale-transition" class="shrink mr-2"></v-img-stub>
+        </div>
+      </v-app-bar-nav-icon-stub>
+      <v-toolbar-title-stub>Employee App</v-toolbar-title-stub>
+      <v-spacer-stub></v-spacer-stub>
+      <v-toolbar-items-stub class="hidden-sm-and-down">
+        <div class="my-2">
+          <v-btn-stub color="purple" rounded="true" dark="true" tag="button" activeclass="" to="/new-employee" type="button" style="padding: 23px;">
+            <v-icon-stub large="" left="">
+              mdi-plus-circle-outline
+            </v-icon-stub> <span style="margin-left: 5px;">New Employee</span>
+          </v-btn-stub>
+        </div>
+        <div class="text-center" style="margin-top: 10px; margin-left: 20px;">
+          <v-menu-stub opendelay="0" closedelay="0" contentclass="" maxwidth="auto" nudgebottom="0" nudgeleft="0" nudgeright="0" nudgetop="0" nudgewidth="200" openonclick="true" closeonclick="true" maxheight="auto" offsetx="true" origin="top left" transition="v-menu-transition">
+            <v-card-stub loaderheight="4" tag="div">
+              <v-list-stub tag="div">
+                <v-list-item-stub activeclass="" tag="div">
+                  <v-list-item-avatar-stub size="40"><img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John"></v-list-item-avatar-stub>
+                  <v-list-item-content-stub>
+                    <v-list-item-title-stub>Kuda Dhliwayo</v-list-item-title-stub>
+                    <v-list-item-subtitle-stub>Owner</v-list-item-subtitle-stub>
+                  </v-list-item-content-stub>
+                  <v-list-item-action-stub>
+                    <v-btn-stub tag="button" activeclass="" icon="true" type="button" class="red--text">
+                      <v-icon-stub>mdi-heart</v-icon-stub>
+                    </v-btn-stub>
+                  </v-list-item-action-stub>
+                </v-list-item-stub>
+              </v-list-stub>
+              <v-divider-stub></v-divider-stub>
+              <v-list-stub tag="div">
+                <v-list-item-stub activeclass="" tag="div">
+                  <v-list-item-action-stub><small>
+                      <v-icon-stub>mdi-home</v-icon-stub>
+                    </small></v-list-item-action-stub>
+                  <v-list-item-title-stub><small>Profile</small></v-list-item-title-stub>
+                </v-list-item-stub>
+                <v-divider-stub></v-divider-stub>
+                <v-list-item-stub activeclass="" tag="div">
+                  <v-list-item-action-stub><small>
+                      <v-icon-stub>mdi-lock</v-icon-stub>
+                    </small></v-list-item-action-stub>
+                  <v-list-item-title-stub><small>Logout</small></v-list-item-title-stub>
+                </v-list-item-stub>
+              </v-list-stub>
+            </v-card-stub>
+          </v-menu-stub>
+        </div>
+      </v-toolbar-items-stub>
+      <v-menu-stub opendelay="0" closedelay="0" contentclass="" maxwidth="auto" nudgebottom="0" nudgeleft="0" nudgeright="0" nudgetop="0" nudgewidth="0" openonclick="true" closeonclick="true" closeoncontentclick="true" maxheight="auto" offsety="true" origin="top left" transition="v-menu-transition" class="hidden-md-and-up">
+        <v-list-stub tag="div">
+          <v-list-item-stub activeclass="" tag="div">
+            <v-list-item-title-stub>
+              <v-btn-stub outlined="true" tag="button" activeclass="" type="button">
+                <v-icon-stub>mdi-home</v-icon-stub> About
+              </v-btn-stub>
+            </v-list-item-title-stub>
+          </v-list-item-stub>
+          <v-list-item-stub activeclass="" tag="div">
+            <v-list-item-title-stub>
+              <v-btn-stub outlined="true" tag="button" activeclass="" type="button">
+                <v-icon-stub>mdi-lock</v-icon-stub> Logout
+              </v-btn-stub>
+            </v-list-item-title-stub>
+          </v-list-item-stub>
+        </v-list-stub>
+      </v-menu-stub>
+    </v-app-bar-stub>
+  </v-card-stub>
+  <v-main-stub tag="main">
+    <router-view></router-view>
+  </v-main-stub>
+</v-app-stub>
+`;

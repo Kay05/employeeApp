@@ -82,7 +82,6 @@ export default {
           this.$store.commit("setIsLoading", false);
         })
         .catch((error) => {
-          console.log(error);
           this.$store.commit("setIsLoading", false);
         });
     },
