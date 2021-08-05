@@ -15,7 +15,8 @@ class Skill extends Model
      * @var array
      */
     protected $fillable = [
-        'name'
+        'name',
+        'slug'
     ];
 
     public function employees(){
